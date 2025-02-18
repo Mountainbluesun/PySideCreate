@@ -1,12 +1,17 @@
-from PySide6 import QtWidgets
+from PySide6 import QtWidgets, QtGui
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit
+
+from createapp.api.note import Note, get_notes
 
 
 class MainWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("PyNotes")
+
         self.setup_ui()
+        self.populate_notes()
+        #self.lw_notes.addItems(["1", "2", "3"])
 
     def setup_ui(self):
         self.create_widgets()
@@ -32,23 +37,51 @@ class MainWindow(QtWidgets.QWidget):
         self.main_layout.addWidget(self.te_content, 0, 1, 2, 1)
 
     def setup_connections(self):
-        pass
+        self.btn_createNotes.clicked.connect(self.create_note)
+        self.te_content.textChanged.connect(self.save_note)
+        self.lw_notes.itemSelectionChanged.connect(self.populate_notes)
+        #QtWidgets.QShortcut(QtGui.QKeySequence("Backspace"), self.lw_notes, self.delete_selected_note)
+
+    # END UI
+
+    def add_note_to_listwidget(self, note):
+        lw_item = QtWidgets.QListWidgetItem(note.title)
+        lw_item.note = note
+        self.lw_notes.addItem(lw_item)
 
     def create_note(self):
-        print("Create a note new")
+        title, result = QtWidgets.QInputDialog.getText(self, "Add to note", "Title:")
+        if result and title:
+            note = Note(title=title)
+            note.save()
+            self.add_note_to_listwidget(note)
 
     def delete_selected_note(self):
-        print("delete of a note")
+        selected_item = self.get_selected_lw_item()
+        if selected_item:
+            result = selected_item.note.delete()
+            if result:
+                self.lw_notes.takeItem(self.lw_notes.row(selected_item))
+
+    def get_selected_lw_item(self):
+        selected_items = self.lw_notes.selectedItems()
+        if not selected_items:
+            return selected_items[0]
+        return None
 
     def populate_notes(self):
-        print("Loading notes from disk ")
+        notes = get_notes()
+        for note in notes:
+            self.add_note_to_listwidget(note)
 
     def populate_note_content(self):
         print("Loading content of the note")
 
     def save_note(self):
-        print("Backup content of the note")
-
+        selected_item = self.get_selected_lw_item()
+        if selected_item:
+            selected_item.note.content = self.te_content.toPlainText()
+            selected_item.note.save()
 
 
 app = QApplication()

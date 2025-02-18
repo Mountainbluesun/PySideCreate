@@ -5,7 +5,6 @@ from glob import glob
 
 from createapp.api.constants import NOTES_DIR
 
-
 def get_notes():
     notes = []
     files = glob(os.path.join(NOTES_DIR, "*.json"))
@@ -27,7 +26,9 @@ class Note:
             self.uuid = uuid
         else:
             self.uuid = str(uuid4())
-        self.uuid = str(uuid4())
+
+
+        #self.uuid = str(uuid4())
         self.title = title
         self.content = content
 
