@@ -1,12 +1,14 @@
 from PySide6 import QtWidgets, QtGui
 from PySide6.QtWidgets import QApplication, QWidget, QPushButton, QLineEdit
 
+
 from createapp.api.note import Note, get_notes
 
 
-class MainWindow(QtWidgets.QWidget):
+class MainWindowa(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        #self.ctx = self.ctx
         self.setWindowTitle("PyNotes")
 
         self.setup_ui()
@@ -75,7 +77,13 @@ class MainWindow(QtWidgets.QWidget):
             self.add_note_to_listwidget(note)
 
     def populate_note_content(self):
-        print("Loading content of the note")
+        selected_item = self.get_selected_lw_item()
+        if selected_item:
+            self.te_content.setText(selected_item.note.content)
+        else:
+            self.te_content.clear()
+
+
 
     def save_note(self):
         selected_item = self.get_selected_lw_item()
@@ -85,6 +93,6 @@ class MainWindow(QtWidgets.QWidget):
 
 
 app = QApplication()
-win = MainWindow()
+win = MainWindowa()
 win.show()
 app.exec()

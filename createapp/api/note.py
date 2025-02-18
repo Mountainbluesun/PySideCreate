@@ -5,6 +5,7 @@ from glob import glob
 
 from createapp.api.constants import NOTES_DIR
 
+
 def get_notes():
     notes = []
     files = glob(os.path.join(NOTES_DIR, "*.json"))

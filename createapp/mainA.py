@@ -9,12 +9,12 @@ from fbs_runtime.application_context.PySide2 import ApplicationContext
 
 import sys
 
-from createapp.main_window import MainWindow
+from createapp.main_windowa import MainWindowa
 
 if __name__ == '__main__':
     appctxt = ApplicationContext()
-    window = MainWindow()
-    window.resize(250, 150)
+    window = MainWindowa(ctx=appctxt)
+    window.resize(550, 600)
     window.show()
     exit_code = appctxt.app.exec_()
     sys.exit(exit_code)
